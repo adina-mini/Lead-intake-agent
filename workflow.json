@@ -1,0 +1,244 @@
+{
+  "name": "Lead Intake & Response Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -80,
+        80
+      ],
+      "id": "3a9d4ba5-b79a-465a-aef4-a8e8ebd030c3",
+      "name": "When chat message received",
+      "webhookId": "70aac585-0cb6-4eef-9648-a0cb32ac062a"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "\"You are Adina’s AI Business Manager.\n\n    CRITICAL RULES:\n\n        GREETING: If a user says 'Hello' or 'Hi' without project details, greet them warmly: 'Hey! I’m Adina’s Lead Manager. I help organize her projects. If you have a project in mind, tell me the details (budget, category, etc.), and I’ll get it on her radar!'\n\n        GATEKEEPING: DO NOT use the Google Sheets tool for greetings or general chat.\n\n        LEAD CAPTURE: ONLY use the Google Sheets tool for clear business inquiries or project details.\n\n        DATA INTEGRITY: When using the tool, use these exact fields: Contact_Name, Category, Priority, Budget_Estimate, AI_Summary.\n\n        MISSING DATA: If a specific piece of information (like budget or category) is not provided by the user, you MUST enter 'N/A' for that field. Do not guess.\n\n        RESPONSE: After saving, confirm: 'Got it! I’ve logged those details in Adina’s manager. She’ll review it soon!'\"\n\nPRIORITY LOGIC: > \nSet Priority to 'High' if the budget is over $2,000 OR if the user expresses urgency using words like 'hurry', 'urgent', 'asap', or 'immediately'.\n\n    Set Priority to 'Medium' if the budget is between $500 and $2,000.\n\n    Set Priority to 'Low' if the budget is under $500 or not mentioned.",
+          "maxIterations": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        144,
+        144
+      ],
+      "id": "d3b0b5e2-1e05-4f0a-9b61-341e52700f47",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "llama-3.3-70b-versatile",
+          "mode": "list",
+          "cachedResultName": "llama-3.3-70b-versatile"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        352
+      ],
+      "id": "4ec37ab8-80d6-443a-9902-7cec1abed49c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Q3YqNgN7UZGk36WV",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        352
+      ],
+      "id": "a91e00bb-12cb-4bde-8cd6-adced0adc1a5",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ixFDc8RgruwV_xvO6E48frW8G7OOdvhvEXvd-e3kKHs",
+          "mode": "list",
+          "cachedResultName": "Client_Lead_Manager_v1_Final",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ixFDc8RgruwV_xvO6E48frW8G7OOdvhvEXvd-e3kKHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 842758892,
+          "mode": "list",
+          "cachedResultName": "sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ixFDc8RgruwV_xvO6E48frW8G7OOdvhvEXvd-e3kKHs/edit#gid=842758892"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $now.setZone('Asia/Karachi').toFormat('dd/MM/yyyy, hh:mm a') }}",
+            "Contact_Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Contact_Name', ``, 'string') }}",
+            "Category": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Category', ``, 'string') }}",
+            "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+            "Budget_Estimate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Budget_Estimate', ``, 'string') }}",
+            "AI_Summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('AI_Summary', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "CSV"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact_Name",
+              "displayName": "Contact_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Budget_Estimate",
+              "displayName": "Budget_Estimate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AI_Summary",
+              "displayName": "AI_Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        352
+      ],
+      "id": "db01587f-b3c8-4076-982e-09ebaa379d12",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "diMdmfLAsi0OTdPs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5529eab2-4c50-4b56-a9ec-a6469c10b4c2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "186c3d6c447f54bbe04504e83b484e166b6b3696bf90dc7fc56a0b87f3c731c1"
+  },
+  "id": "ReUtMiidYPzGFwku",
+  "tags": []
+}
